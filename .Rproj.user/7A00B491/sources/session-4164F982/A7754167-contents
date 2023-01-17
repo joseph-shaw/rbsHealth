@@ -156,23 +156,27 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
         flag = ifelse(tdl_flag & is.na(flag), "flag", flag),
       )
 
+    if(push_to_sb){
+
+      bloods <- bloods %>%
+        mutate(about = tolower(name)) %>%
+        left_join(personal_ids, by = "about")
+      neon::push_smartabase(
+        bloods,
+        form = "Blood Testing"
+      )
+    }
+
     if(a == files[1]){all_bloods <- bloods}else{
       all_bloods <- rbind(all_bloods, bloods)
     }
 
   }
 
-  if(push_to_sb){
 
-    all_bloods <- all_bloods %>% mutate(about = tolower(name)) %>%
-      left_join(personal_ids, by = "about")
-    neon::push_smartabase(
-      all_bloods,
-      form = "Blood Testing"
-    )
-  }else{
-    return(all_bloods)
-  }
+
+  return(all_bloods)
+
 
 }
 
