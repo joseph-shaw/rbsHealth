@@ -159,6 +159,7 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
     if(push_to_sb){
 
       bloods <- bloods %>%
+        ungroup() %>%
         mutate(about = tolower(name)) %>%
         left_join(personal_ids, by = "about")
       neon::push_smartabase(
