@@ -16,6 +16,16 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
   library(tidyverse)
   library(textreadr)
 
+  personal_ids <- neon::pull_smartabase(
+    form = "Personal Details",
+    start_date = "01/01/2000",
+    end_date = "01/01/2050"
+  ) %>%
+    mutate(
+      about = tolower(about)
+    ) %>%
+    select(about, user_id)
+
   files <- list.files(file.path, full.names = T, include.dirs = F, recursive = T, pattern = "html")
 
   markers <- c(
@@ -80,7 +90,7 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
     for(i in variables){
       j <- which(variables == i)
       index <- which(data == i)
-      bloods$name[j] <- details[2]
+      bloods$name[j] <- tolower(details[2])
       bloods$date[j] <- date
       bloods$variable[j] <- data[index]
       bloods$value[j] <- data[index+1]
@@ -153,6 +163,9 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
   }
 
   if(push_to_sb){
+
+    all_bloods <- all_bloods %>% mutate(about = tolower(name)) %>%
+      left_join(personal_ids, by = "about")
     neon::push_smartabase(
       all_bloods,
       form = "Blood testing"
