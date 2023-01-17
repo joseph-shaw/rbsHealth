@@ -24,7 +24,8 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
     mutate(
       about = tolower(about)
     ) %>%
-    select(about, user_id)
+    select(about, user_id) %>%
+    distinct()
 
   files <- list.files(file.path, full.names = T, include.dirs = F, recursive = T, pattern = "html")
 
