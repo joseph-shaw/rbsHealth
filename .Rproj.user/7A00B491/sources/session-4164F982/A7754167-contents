@@ -168,7 +168,7 @@ push_bloods_to_sb <- function(file.path = "S:/Physio/Blood results/Pending Uploa
       left_join(personal_ids, by = "about")
     neon::push_smartabase(
       all_bloods,
-      form = "Blood testing"
+      form = "Blood Testing"
     )
   }else{
     return(all_bloods)
